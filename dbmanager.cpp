@@ -63,19 +63,20 @@ bool DbManager::removeReport(const QString& id)
    // if (userExists(username))
     if(!id.isEmpty())
     {
+        // qWarning()<<"id is "<<id;
         QSqlQuery queryDelete;
-        queryDelete.prepare("DELETE FROM report WHERE id = id");
-        queryDelete.bindValue("id", id);
+        queryDelete.prepare("DELETE FROM report WHERE id = :id");
+        queryDelete.bindValue(":id", id);
         success = queryDelete.exec();
 
         if(!success)
-            qDebug() << "Delete user failure:" << queryDelete.lastError();
+            qWarning() << "Delete user failure:" << queryDelete.lastError();
         else
-            qDebug() << "User successfully deleted" << id;
+            qWarning() << "User successfully deleted" << id;
     }
     else
     {
-        qDebug() << "Error deleting report:id does not exist";
+        qWarning() << "Error deleting report:id does not exist";
     }
     return success;
 }

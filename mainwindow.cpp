@@ -20,25 +20,12 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    // QSqlTableModel *model=new QSqlTableModel(this);
-    // model=new QSqlTableModel(this);
-    // model->setTable("report");
-    // // model->setEditStrategy(QSqlTableModel::OnRowChange);
-    // // model->setEditStrategy(QSqlTableModel::OnFieldChange);
-    // model->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    // model->select();
-    // ui->tableView->setModel(model);
-    RefreshReport();
-    // connect(this, &MainWindow::modelReportChanged, this, &MainWindow::RefreshReportModel);
-    // connect(this, &MainWindow::modelReportChanged, this, &MainWindow::on_pushButton_clicked);
+    ConnectReport();
 }
 
-void MainWindow::RefreshReport(){
+void MainWindow::ConnectReport(){
     model=new QSqlTableModel(this);
     model->setTable("report");
-    // model->setEditStrategy(QSqlTableModel::OnRowChange);
-    // model->setEditStrategy(QSqlTableModel::OnFieldChange);
     model->setEditStrategy(QSqlTableModel::OnManualSubmit);
     model->select();
     ui->tableView->setModel(model);
@@ -46,23 +33,9 @@ void MainWindow::RefreshReport(){
 
 void MainWindow::RefreshReportModel(){
     model->select();
-    qWarning()<<"this is fuck";
 }
 void MainWindow::InsertData(QString name){
     dbM.addReport(name);
-
-    // ui->tableView->setModel(NULL);
-    // QMessageBox msg;
-    // msg.setText("insert was succesfull");
-    // msg.exec();
-    // usleep(1000);
-    // QThread::sleep(2);
-    // emit modelReportChanged();
-    // model->submitAll();
-    // model->select();
-    // ui->tableView->reset();
-    // QSqlTableModel::select();
-    // RefreshReport();
 }
 
 MainWindow::~MainWindow()
@@ -74,51 +47,24 @@ MainWindow::~MainWindow()
 void MainWindow::on_btnAddReport_clicked()
 {
     qWarning()<<"WARNING: add button";
-    qDebug()<<"DEBUG: add button";
-    // insertDlg=new insertreport(0);
-    // insertDlg->show();
-
-    // insertreport *newT=0;
-    // newT=new insertreport();
     insertreport *newT=new insertreport(this);
     newT->setAttribute(Qt::WA_DeleteOnClose);
     connect(newT,SIGNAL(destroyed(QObject*)), SLOT(RefreshReportModel()));
     newT->show();
 }
 
-
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_btnDeleteReport_clicked()
 {
-    // ui->tableView->setModel(NULL);
-    // QString name=ui->txtName->text();
-    // dbM.addReport(name, *model);
-    // ui->tableView->setModel(NULL);
-    // model->select();
-    // RefreshReport();
-
-    // model->select();
-
-    // QSqlDatabase db=QSqlDatabase::addDatabase("QPSQL");
-    // db.setHostName("localhost");
-    // db.setDatabaseName("xpol");
-    // db.setPassword("");
-    // db.setUserName("postgres");
-    // QMessageBox msg;
-    // if(db.open()){
-        // //msg.setText("Success");
-        // QString sql="select * from report";
-        // QSqlQuery *query=new QSqlQuery(db);
-        // //query->setQuery(sql);
-        // query->prepare(sql);
-        // query->exec();
-
-        // QSqlQueryModel *modelReport=new QSqlQueryModel();
-        // modelReport->setQuery(*query);
-        // ui->tableView->setModel(modelReport);
-
-    // }else{
-
-        // msg.setText("Failed");
-    // }
-    // msg.exec();
+    dbM.removeReport(glRow);
+    model->select();
 }
+
+
+void MainWindow::on_tableView_clicked(const QModelIndex &index)
+{
+    int rowId=index.row();
+    QModelIndex idx=model->index(rowId,0);
+    glRow =idx.data().toString();
+    qWarning()<<glRow;
+}
+

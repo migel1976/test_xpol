@@ -22,18 +22,23 @@ public:
 
 
 private slots:
-    void on_pushButton_clicked();
     void on_btnAddReport_clicked();
+    void on_btnDeleteReport_clicked();
+
     void RefreshReportModel();
+
+    void on_tableView_clicked(const QModelIndex &index);
 
 private:
     Ui::MainWindow *ui;
     QSqlTableModel *model;
     insertreport *insertDlg;
-    void RefreshReport();
-    // DbManager dbM;
+    void ConnectReport();
+
+    QString glRow;
 signals:
     void modelReportChanged();
+
 
 };
 #endif // MAINWINDOW_H

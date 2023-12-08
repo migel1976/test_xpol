@@ -36,11 +36,11 @@ public:
     bool addReport(const QString& name);
 
     /**
-     * @brief Remove person data from db
-     * @param name - name of person to remove.
+     * @brief Remove report from data from db
+     * @param id - name of person to remove.
      * @return true - person removed successfully, false - person not removed
      */
-    bool removeReport(const QString& username);
+    bool removeReport(const QString& id);
 
     /**
      * @brief Check if person of name "name" exists in db
