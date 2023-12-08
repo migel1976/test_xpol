@@ -34,8 +34,8 @@ void MainWindow::ConnectReport(){
 void MainWindow::RefreshReportModel(){
     model->select();
 }
-void MainWindow::InsertData(QString name){
-    dbM.addReport(name);
+void MainWindow::InsertData(QString name, int cf){
+    dbM.addReport(name, cf);
 }
 
 MainWindow::~MainWindow()

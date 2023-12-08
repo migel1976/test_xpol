@@ -33,7 +33,7 @@ public:
      * @brief Creates a new 'people' table if it doesn't already exist
      * @return true - 'people' table created successfully, false - table not created
      */
-    bool addReport(const QString& name);
+    bool addReport(const QString& name, int cf);
 
     /**
      * @brief Remove report from data from db

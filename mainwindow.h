@@ -18,7 +18,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void InsertData(QString name);
+    void InsertData(QString name, int cf);
 
 
 private slots:

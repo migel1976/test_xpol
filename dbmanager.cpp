@@ -28,16 +28,17 @@ DbManager::~DbManager()
 }
 
 
-bool DbManager::addReport(const QString& name)
+bool DbManager::addReport(const QString& name, int cf)
 {
     bool success = false;
 
     if (!name.isEmpty())
     {
         QSqlQuery queryAdd;
-        queryAdd.prepare("INSERT INTO report (name) "
-                      "VALUES (?)");
+        queryAdd.prepare("INSERT INTO report (name, cf) "
+                      "VALUES (?, ?)");
         queryAdd.bindValue(0,name);
+        queryAdd.bindValue(1,cf);
         if(queryAdd.exec())
         {
             success = true;
