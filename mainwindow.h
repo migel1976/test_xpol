@@ -6,6 +6,17 @@
 #include "dbmanager.h"
 #include "insertreport.h"
 
+#include <QwtSymbol>
+#include <QwtPlotGrid>
+#include <QwtLegend>
+#include <QwtPlotCurve>
+#include <QwtScaleEngine>
+#include <QwtScaleDraw>
+
+#include "defaultchart.h"
+#include "chartxpol.h"
+#include "zoomer.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -29,11 +40,21 @@ private slots:
 
     void on_tableView_clicked(const QModelIndex &index);
 
+    void on_btnLoadJSON_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSqlTableModel *model;
     insertreport *insertDlg;
     void ConnectReport();
+
+    DefaultChart *defaultChart;
+
+    QwtPlot *plot;
+    ChartXpol *chartXpol;
+    Zoomer *zoomer;
+    void SetZoomer(QwtPlot *chart);
+    double* ReadJSONDB(QString val, int &lend);
 
     QString glRow;
 signals:

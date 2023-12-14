@@ -7,6 +7,7 @@
 #include <QSqlRecord>
 #include <QSqlTableModel>
 #include <QDebug>
+#include <QJsonDocument>
 
 class DbManager
 {
@@ -33,7 +34,8 @@ public:
      * @brief Creates a new 'people' table if it doesn't already exist
      * @return true - 'people' table created successfully, false - table not created
      */
-    bool addReport(const QString& name, int cf);
+    // bool addReport(const QString& name, int cf);
+    bool addReport(const QString& name, int cf, QJsonDocument copol);
 
     /**
      * @brief Remove report from data from db

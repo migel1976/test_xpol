@@ -28,17 +28,21 @@ DbManager::~DbManager()
 }
 
 
-bool DbManager::addReport(const QString& name, int cf)
+bool DbManager::addReport(const QString& name, int cf, QJsonDocument lclcopol )
 {
     bool success = false;
+    // QByteArray copol=lclcopol.toJson();
+    QString copol=lclcopol.toJson(QJsonDocument::Compact);
+    qWarning()<<"QVariant copol "<<copol;
 
     if (!name.isEmpty())
     {
         QSqlQuery queryAdd;
-        queryAdd.prepare("INSERT INTO report (name, cf) "
-                      "VALUES (?, ?)");
+        queryAdd.prepare("INSERT INTO report (name, cf, copol) "
+                      "VALUES (?, ?, ?)");
         queryAdd.bindValue(0,name);
         queryAdd.bindValue(1,cf);
+        queryAdd.bindValue(2,copol);
         if(queryAdd.exec())
         {
             success = true;
