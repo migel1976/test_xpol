@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMessageBox>
 #include <QSqlTableModel>
 #include "dbmanager.h"
 #include "insertreport.h"
@@ -42,8 +43,13 @@ private slots:
 
     void on_btnLoadJSON_clicked();
 
+    void on_btnGetSpectr_clicked();
+
+    void on_btnSaveTrace_clicked();
+
 private:
     Ui::MainWindow *ui;
+    QMessageBox msgBox;
     QSqlTableModel *model;
     insertreport *insertDlg;
     void ConnectReport();
@@ -55,8 +61,14 @@ private:
     Zoomer *zoomer;
     void SetZoomer(QwtPlot *chart);
     double* ReadJSONDB(QString val, int &lend);
+    void WriteJSONDB();
 
+    QJsonDocument glJsonDoc;
     QString glRow;
+    double *glCopol;
+    double *glFreq;
+    double glCF;
+    int glLen;
 signals:
     void modelReportChanged();
 
