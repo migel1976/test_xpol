@@ -15,6 +15,7 @@ SOURCES += \
     insertreport.cpp \
     main.cpp \
     mainwindow.cpp \
+    trace.cpp \
     zoomer.cpp
 
 HEADERS += \
@@ -23,6 +24,7 @@ HEADERS += \
     defaultchart.h \
     insertreport.h \
     mainwindow.h \
+    trace.h \
     zoomer.h
 
 FORMS += \

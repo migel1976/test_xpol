@@ -17,6 +17,7 @@
 #include "defaultchart.h"
 #include "chartxpol.h"
 #include "zoomer.h"
+#include "trace.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -30,7 +31,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void InsertData(QString name, int cf);
+    // void InsertData(QString name, int cf);
+    void InsertData(QString name, int cf, QJsonDocument doc);
 
 
 private slots:
@@ -46,6 +48,8 @@ private slots:
     void on_btnGetSpectr_clicked();
 
     void on_btnSaveTrace_clicked();
+
+    void on_pushButton_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -63,12 +67,15 @@ private:
     double* ReadJSONDB(QString val, int &lend);
     void WriteJSONDB();
 
+    // QJsonDocument glJsonDoc;
     QJsonDocument glJsonDoc;
     QString glRow;
     double *glCopol;
     double *glFreq;
     double glCF;
     int glLen;
+
+    trace *copolTrace;
 signals:
     void modelReportChanged();
 

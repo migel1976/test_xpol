@@ -16,8 +16,8 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <layout class="QGridLayout" name="gridLayout" rowstretch="4,2,1">
-      <item row="2" column="0">
+     <layout class="QGridLayout" name="gridLayout" rowstretch="4,0">
+      <item row="1" column="0">
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="2" column="2">
          <widget class="QPushButton" name="btnDeleteReport">
@@ -67,13 +67,23 @@
           </property>
          </widget>
         </item>
+        <item row="2" column="0">
+         <widget class="QPushButton" name="pushButton">
+          <property name="text">
+           <string>PushButton</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
-      <item row="1" column="0">
-       <widget class="QTableView" name="tableView"/>
-      </item>
       <item row="0" column="0">
-       <widget class="QwtPlot" name="qwtPlot"/>
+       <widget class="QSplitter" name="splitter">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <widget class="QwtPlot" name="qwtPlot"/>
+        <widget class="QTableView" name="tableView"/>
+       </widget>
       </item>
      </layout>
     </item>

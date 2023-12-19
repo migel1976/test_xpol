@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QSqlDatabase>
-#include <QMessageBox>
 #include <QSqlQuery>
 #include <QSqlQueryModel>
 #include <QSqlTableModel>
@@ -12,8 +11,6 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-
-
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -47,6 +44,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    //change color for handle spliter
+    ui->splitter->setStyleSheet("QSplitter::handle{background-color: rgb(55, 100, 110);}");
+    ui->splitter->setStretchFactor(0,1);
+    ui->splitter->setStretchFactor(1,2);
     plot=ui->qwtPlot;
     defaultChart=new DefaultChart(plot);
     QwtPlot* chart=defaultChart->getPlot();
@@ -66,20 +67,55 @@ void MainWindow::ConnectReport(){
 void MainWindow::RefreshReportModel(){
     model->select();
 }
-void MainWindow::InsertData(QString name, int cf){
-
-    QString val;
-    QFile file;
-    // file.setFileName("/home/mike/copol.json");
-    file.setFileName("/home/mike/trace.json");
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    val=file.readAll();
-    file.close();
-    // qWarning()<<val;
-
-    QJsonDocument copol=QJsonDocument::fromJson(val.toUtf8());
+void MainWindow::InsertData(QString name, int cf, QJsonDocument doc){
+    qWarning()<<"JSON Doc in InsertData"<<glJsonDoc;
+    qWarning()<<"JSON Doc in InsertData from modal dlg"<<doc;
     // dbM.addReport(name, cf, copol);
-    dbM.addReport(name, cf, glJsonDoc);
+    dbM.addReport(name, cf, doc);
+
+    // QString val;
+    // QFile file;
+    // // file.setFileName("/home/mike/copol.json");
+    // file.setFileName("/home/mike/trace.json");
+    // file.open(QIODevice::ReadOnly | QIODevice::Text);
+    // val=file.readAll();
+    // file.close();
+    // // qWarning()<<val;
+
+    // QJsonDocument copol=QJsonDocument::fromJson(val.toUtf8());
+    // dbM.addReport(name, cf, copol);
+    // qWarning()<<"JSON Doc"<<glJsonDoc;
+    // glLen=601;
+    // double copol[glLen];
+    // memcpy(copol, glCopol, glLen);
+    // // qWarning()<<"glCopol[23]"<<glCopol[23];
+    // qWarning()<<"copol[23]"<<copol[23];
+    // QJsonArray arr;
+    int i=0;
+    glLen=601;
+    // while(i<glLen){
+        // double tmp=glCopol[i];
+        // // arr.append(QString::number(glCopol[i]));
+        // arr.append(QString::number(tmp));
+        // i++;
+    // }
+    // qWarning()<<"arr"<<arr;
+    // QJsonObject obj;
+    // obj["amp"]=arr;
+    // QJsonDocument jsonDoc=QJsonDocument(obj);
+    // qWarning()<<"glJsonDoc from insert"<<glJsonDoc;
+    // // dbM.addReport(name, cf, glJsonDoc);
+    // dbM.addReport(name, cf, jsonDoc);
+
+    // double *tmp=copolTrace->getTrace();
+    // qWarning()<<"copolTrace[23]"<<tmp[23];
+
+    // while(i<glLen){
+        // double tmp=glCopol[i];
+        // // arr.append(QString::number(glCopol[i]));
+        // arr.append(QString::number(tmp));
+        // i++;
+    // }
 }
 
 MainWindow::~MainWindow()
@@ -113,8 +149,9 @@ void MainWindow::on_tableView_clicked(const QModelIndex &index)
     qWarning()<<glRow;
     QModelIndex idxCopol=model->index(rowId,3);
     QString val=idxCopol.data().toString();
-    qWarning()<<"val is "<<val;
-    int lend=8190;
+    // qWarning()<<"val is "<<val;
+    int lend=601;
+    glLen=lend;
     double *dcopol=ReadJSONDB(val, lend);
     double cf=11200;
     double span=10;
@@ -131,7 +168,7 @@ void MainWindow::on_tableView_clicked(const QModelIndex &index)
     QwtPlot* chart=defaultChart->getPlot();
     chartXpol=new ChartXpol(chart);
     chartXpol->showData(freq, dcopol, dcopol, lend);
-    delete []dcopol;
+    // delete []dcopol;
     SetZoomer(chart);
 }
 
@@ -355,15 +392,15 @@ void MainWindow::on_btnGetSpectr_clicked()
         // QString strSpan=ui->txtSpan->text();
         std::string span="";
         const char* charSpan=span.c_str();
-        // span=":INIT:CONT 0;\n";
-        // charSpan=span.c_str();
-        // commandInstrument(instSock, charSpan );
-        // span=":FORM REAL,64;\n";
-        // charSpan=span.c_str();
-        // commandInstrument(instSock, charSpan );
-        // span=":FORM:BORD SWAP\n";
-        // charSpan=span.c_str();
-        // commandInstrument(instSock, charSpan );
+        span=":INIT:CONT 0;\n";
+        charSpan=span.c_str();
+        commandInstrument(instSock, charSpan );
+        span=":FORM REAL,64;\n";
+        charSpan=span.c_str();
+        commandInstrument(instSock, charSpan );
+        span=":FORM:BORD SWAP\n";
+        charSpan=span.c_str();
+        commandInstrument(instSock, charSpan );
         span=":TRAC:DATA? TRACE1\n";
         charSpan=span.c_str();
         char *charBuf=(char*)malloc(INPUT_BUF_SIZE);
@@ -401,20 +438,13 @@ void MainWindow::on_btnGetSpectr_clicked()
             double f=freq[i]=startFreq+i*sp/len-1;
             freq[i]=f;
             glFreq[i]=f;
-
-            // printf("freq d = %f count %d\n",freq[i], i);
         }
-        // memcpy(glFreq, freq, trueLen);
-
-        // chartXpol->showData(freq, res, res, trueLen);
         glLen=trueLen;
         glCF=cf;
+        qWarning()<<"glCopol[23]"<<glCopol[23];
+
         chartXpol->showData(glFreq, glCopol, glCopol, trueLen);
         SetZoomer(chartXpol);
-        // QTcpSocket.close();
-
-        // closesocket(instSock);
-        // fclose(instSock);
         }
 }
 
@@ -424,7 +454,8 @@ void MainWindow::on_btnSaveTrace_clicked()
 
     WriteJSONDB();
     // qWarning()<<"WARNING: add button";
-    insertreport *newT=new insertreport(this);
+    insertreport *newT=new insertreport(glJsonDoc, this);
+    // insertreport *newT=new insertreport(this);
     newT->setAttribute(Qt::WA_DeleteOnClose);
     connect(newT,SIGNAL(destroyed(QObject*)), SLOT(RefreshReportModel()));
     newT->show();
@@ -433,13 +464,24 @@ void MainWindow::on_btnSaveTrace_clicked()
 void MainWindow::WriteJSONDB(){
         QJsonArray arr;
         int i=0;
+        double tmp[glLen];
         while(i<glLen){
+            tmp[i]=glCopol[i];
                 arr.append(QString::number(glCopol[i]));
                 i++;
         }
+        qWarning()<<"WriteJSONDB glCopol"<<glCopol[78];
+        qWarning()<<"WriteJSONDB tmp"<<tmp[78];
+        copolTrace=new trace(tmp, glLen);
+        qWarning()<<"arr"<<arr;
         QJsonObject obj;
         obj["amp"]=arr;
         glJsonDoc=QJsonDocument(obj);
+        qWarning()<<"glJsonDoc"<<glJsonDoc;
+
+
+
+
         // QJsonDocument d=QJsonDocument(obj);
         // PGresult *res=NULL;
         // const char conninfo[]= "postgresql://postgres@localhost?port=5432&dbname=xpol";
@@ -467,3 +509,26 @@ void MainWindow::WriteJSONDB(){
                 // }
         // }
 }
+
+void MainWindow::on_pushButton_clicked()
+{
+   // double *tmp=copolTrace->getTrace();
+   // qWarning()<<"tmp"<<tmp[9];
+    QString val;
+    QFile file;
+    // file.setFileName("/home/mike/copol.json");
+    file.setFileName("/home/mike/trace.json");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    val=file.readAll();
+    file.close();
+    // qWarning()<<val;
+
+    // QJsonDocument copolJSON=QJsonDocument::fromJson(val.toUtf8());
+    glJsonDoc=QJsonDocument::fromJson(val.toUtf8());
+    // qWarning()<<"glJsonDoc"<<glJsonDoc;
+    insertreport *newT=new insertreport(glJsonDoc, this);
+    newT->setAttribute(Qt::WA_DeleteOnClose);
+    connect(newT,SIGNAL(destroyed(QObject*)), SLOT(RefreshReportModel()));
+    newT->show();
+}
+
